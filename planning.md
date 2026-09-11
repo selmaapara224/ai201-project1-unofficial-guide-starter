@@ -9,7 +9,7 @@
 
 ## Domain
 
-<!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? -->
+The domain will be student reviews of Computer Science professors at Howard University. Many students hear about different professors that other students love or ones they hated, but they may not always know the specifics of what was endured in those professor's classes. For some professors with horrible reviews, their classes are unavoidable, and a student may be able to prepare in some way, even if it's just mentally. For other professors with great reviews, a student may be advised to choose that one over another. It is helpful to have this information quickly accessible while actively registering for classes, instead of having to comb through lots of reviews individually.
 
 ---
 
@@ -20,16 +20,16 @@
 
 | # | Source | Description | URL or location |
 |---|--------|-------------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| 1 |RateMyProf|Reviews on Prof Jeremy Blackstone| https://www.ratemyprofessors.com/professor/2640220 |
+| 2 |LRateMyProf |LReviews on Prof Anietie Andy |https://www.ratemyprofessors.com/professor/3048123 |
+| 3 |RateMyProf |Reviews on Prof. Linwei Niu |https://www.ratemyprofessors.com/professor/2719629 |
+| 4 |RateMyProf |Reviews on Prof. Jiang Li |https://www.ratemyprofessors.com/professor/2323879 |
+| 5 |RateMyProf |Reviews on Prof. Andre Campbell |https://www.ratemyprofessors.com/professor/2837871 |
+| 6 |RateMyProf |Reviews on Prof. Todd Shurn |https://www.ratemyprofessors.com/professor/2208362 |
+| 7 |RateMyProf |Reviews on Prof. Legand Burge |https://www.ratemyprofessors.com/professor/286894 |
+| 8 |RateMyProf |Reviews on Prof. Mikayla Orange| https://www.ratemyprofessors.com/professor/3045892|
+| 9 |RateMyProf |Reviews on Prof. Anamika Rupa|https://www.ratemyprofessors.com/professor/2976470 |
+| 10 |RateMyProf |Reviews on Prof. Ashish Adhikari |https://www.ratemyprofessors.com/professor/2751478 |
 
 ---
 

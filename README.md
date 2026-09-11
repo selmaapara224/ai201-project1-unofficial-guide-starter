@@ -6,6 +6,46 @@
 > Every section below is required for submission. One-liners will not receive full credit.
 
 ---
+---
+
+## Environment Setup Note
+
+This project runs on an Intel (x86_64) Mac, which constrains the dependency
+versions in `requirements.txt`. The stock file did not install; three pins were
+added to fix it.
+
+**The failure.** `pip install -r requirements.txt` aborted with:
+
+    ERROR: Could not find a version that satisfies the requirement torch>=1.11.0
+           (from sentence-transformers) (from versions: none)
+
+`from versions: none` means no compatible wheel exists at all — this is a
+platform gap, not a version conflict. `sentence-transformers` requires PyTorch,
+and PyTorch ended macOS x86_64 support at **torch 2.2.2**, which shipped wheels
+only for Python 3.8–3.12. Everything from torch 2.3.0 onward is arm64-only. The
+environment was on Python 3.13, so no installable torch existed.
+
+**The fix, and what it cascaded into.**
+
+1. Installed Python 3.12.10 (the last 3.12 with an official macOS installer) and
+   rebuilt the virtual environment on it.
+2. Pinned `torch==2.2.2`, the final Intel-Mac release.
+3. Pinned `numpy<2`. torch 2.2.2 was compiled against the NumPy 1.x C ABI, so
+   NumPy 2 caused `RuntimeError: Numpy is not available` at embedding time.
+4. Pinned `scipy<1.18`. scipy 1.18 requires `numpy>=2.0.0`, so pinning NumPy
+   alone left the dependency set inconsistent.
+
+**Resulting versions:** Python 3.12.10, torch 2.2.2, numpy 1.26.4,
+scipy 1.17.1, transformers 4.57.6, chromadb 1.5.9, sentence-transformers 3.4.1.
+
+Verified with a clean-room install from the pinned `requirements.txt`:
+`pip check` reports no broken requirements, and `all-MiniLM-L6-v2` produces
+384-dimensional embeddings that store and query correctly through Chroma.
+
+**Portability.** These pins remain valid on Apple Silicon, since torch 2.2.2
+also ships arm64 wheels. The binding constraint for any machine is Python ≤ 3.12.
+
+---
 
 ## Domain
 

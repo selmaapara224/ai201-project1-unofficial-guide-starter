@@ -3,6 +3,14 @@ chromadb>=0.6.0
 groq==0.15.0
 python-dotenv==1.0.1
 
+# Intel-Mac pins — see "Environment Setup Note" in README.md.
+# PyTorch dropped macOS x86_64 wheels after 2.2.2, which caps Python at 3.12.
+# torch 2.2.2 predates the NumPy 2 ABI, so numpy and scipy must stay on 1.x-compatible
+# releases. Harmless on Apple Silicon: torch 2.2.2 ships arm64 wheels too.
+torch==2.2.2
+numpy<2
+scipy<1.18
+
 # Query interface — add whichever you use for Milestone 5:
 # gradio>=6.9.0
 # streamlit>=1.40.0
