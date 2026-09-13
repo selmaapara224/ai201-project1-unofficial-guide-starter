@@ -71,8 +71,8 @@ The domain will be student reviews of Computer Science professors at Howard Univ
 
 | # | Question | Expected answer |
 |---|----------|-----------------|
-| 1 | | |
-| 2 | | |
+| 1 |What Professor should I take for CSCI135 if I want an A? | |
+| 2 |How often does Professor Andy give lab assignments? | |
 | 3 | | |
 | 4 | | |
 | 5 | | |
