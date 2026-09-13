@@ -33,16 +33,13 @@ The domain will be student reviews of Computer Science professors at Howard Univ
 
 ## Chunking Strategy
 
-<!-- How will you split documents into chunks?
-     State your chunk size (in tokens or characters), overlap size, and explain why those
-     numbers fit the structure of your documents.
-     A review-heavy corpus warrants different chunking than a long FAQ. -->
 
-**Chunk size:**
 
-**Overlap:**
+Chunk size: Instead of by characters, the chunks will be split by empty space, making every review its own chunk.
 
-**Reasoning:**
+Overlap: There will be no overlap.
+
+Reasoning: Each review includes the Professor's name, the course the student had them for, and different specific information each student stated. Chunking by review allows for the requested information to always be attached to the specific Professor the information is being requested about. For example, if a query is about the homework load for Professor Blackstone, the user would not want a response that relates to a different professor that also has a review about. homework. 
 
 ---
 
@@ -54,11 +51,11 @@ The domain will be student reviews of Computer Science professors at Howard Univ
      would you weigh in choosing a different embedding model — context length, multilingual
      support, accuracy on domain-specific text, latency? -->
 
-**Embedding model:**
+Embedding model: The embedding model I am using is all-MiniLM-L6-v2. It has a 256-token window, and the maximum amount of tokens out of all of my chunks is 110, so my documents fit within its limitation. 
 
-**Top-k:**
+Top-k: I am using 8, because of the nature of my chunks. My first test query asks about CSCI135 specifically, but also mentions a grade. There is a possibility that a chunk about a professor that teaches a different course will be retrieved, due to other parts of the chunk making it relate closely to those chunks that contain information about CSCI135. Having a higher top-k, 8, allows for the LLM to be sent more chunks, having a higher probability of generating a more-fit answer, instead of leaving out chunks that may have had the specific answer needed in them.
 
-**Production tradeoff reflection:**
+Production tradeoff reflection: If I were to deploy this project for real users, I would still not use a different embedding model, simply because of the size of the reviews. More token allowance would not be needed, because the reviews would never go over the current 256-token window of all-MiniLM-L6-v2, due to RateMyProfessor having a character limit on their website in the first place.
 
 ---
 
@@ -73,7 +70,7 @@ The domain will be student reviews of Computer Science professors at Howard Univ
 |---|----------|-----------------|
 | 1 |What Professor should I take for CSCI135 if I want an A? | |
 | 2 |How often does Professor Andy give lab assignments? | |
-| 3 | | |
+| 3 |What do students say about Professor Jiang Li's lecturing style? | |
 | 4 | | |
 | 5 | | |
 
@@ -85,9 +82,9 @@ The domain will be student reviews of Computer Science professors at Howard Univ
      Consider: noisy or inconsistent documents, missing source attribution, off-topic
      retrieval, chunks that split key information across boundaries. -->
 
-1.
+1. Anomalies in the reviews can cause a challenge. One student gave a raving review about Professor Jiang Li, while the rest of the reviews are horrible. There is also one bad review for Professor Jeremy Blackstone, while the rest are raving. This is less of an issue for the scope of this project though, but would definitley be an issue for a student seeking information if the project was deployed.
 
-2.
+2. Colloquialisms, slang, and abbreviations within reviews can cause an issue. A query can mention "homework" and the most fitting review could say "hw" and not be retrieved.
 
 ---
 
