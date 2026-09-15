@@ -90,13 +90,9 @@ Production tradeoff reflection: If I were to deploy this project for real users,
 
 ## Architecture
 
-<!-- Draw a diagram of your pipeline showing the five stages:
-     Document Ingestion → Chunking → Embedding + Vector Store → Retrieval → Generation
-     Label each stage with the tool or library you're using.
-     You can use ASCII art, a Mermaid diagram, or embed a sketch as an image.
-     You'll use this diagram as context when prompting AI tools to implement each stage. -->
+/documents/App of AI Project 1 Pipeline
 
----
+
 
 ## AI Tool Plan
 
@@ -109,9 +105,12 @@ Production tradeoff reflection: If I were to deploy this project for real users,
      "I'll use AI to help me code" is not a plan.
      "I'll give Claude my Chunking Strategy section and ask it to implement chunk_text()
      with my specified chunk size and overlap" is a plan. -->
+Milestone 1 — Collecting Documents: I asked Claude the best way to format my documents for the information I wanted to retreive.
 
-**Milestone 3 — Ingestion and chunking:**
+Milestone 2 — Writing Spec: I asked Claude to explain certain concepts that I needed a deeper understanding of to properly write my spec.
 
-**Milestone 4 — Embedding and retrieval:**
+Milestone 3 — Ingestion and chunking: I will ask Claude to review the format of my documents, and ask it to implement ingestion. I will then give Claude my Chunking Strategy and ask it to implement chunk_text(), ensuring it also saves the metadata I need saved.
+
+Milestone 4 — Embedding and retrieval: I will ask claude to implement
 
 **Milestone 5 — Generation and interface:**

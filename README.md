@@ -104,11 +104,15 @@ also ships arm64 wheels. The binding constraint for any machine is Python ≤ 3.
 
 | # | Source document | Chunk text |
 |---|----------------|------------|
-| 1 | | |
-| 2 | | |
-| 3 | | |
-| 4 | | |
-| 5 | | |
+| 1 |Professor Anamika Rupa Reviews |Professor Anamika Rupa — CSCI120 — Quality 2/5, Difficulty 1/5:
+Reads off of slides, doesn't teach much. Quizzes/exams replicate slides tho, so just memorize them if needed. Lectures are short but boring. |
+| 2 |Professor Anamika Rupa Reviews|Professor Anamika Rupa — CSCI120 — Quality 1/5, Difficulty 5/5: Not a good professor, doesn't know what she is doing! Too much homework for 2 credit class and its honestly not even that good. Take another professor if possible |
+| 3 |Professor Anamika Rupa Reviews |Professor Anamika Rupa — CSCI453 — Quality 1/5, Difficulty 5/5:
+This professor is bad with communication, she doesn't really teach in class! Had so many problems this semester and tried to talk to her about it but no response! Uses chatgpt, slides and so much work load! Doesn't understand simple questions. |
+| 4 |Professor Anamika Rupa Reviews |Professor Anamika Rupa — CSCI453 — Quality 1/5, Difficulty 5/5:
+This professor is the worst i have taken so far, idk why she is even a PhD candidate ! Like using chat in class to explain stuff! So many slides and she doesn't even know what she teaching, so much codio and quizzes on top of that midterm and final! She is the worst |
+| 5 |Professor Anamika Rupa Reviews |Professor Anamika Rupa — CSCI120 — Quality 2/5, Difficulty 2/5:
+She was new when I had her, and for the most part it seemed like she didn't know what she was doing. It was an easy class, but I can't really say that I learned anything from her. She was very lenient with her grading though. Also, for a class called exploring computer science, we didn't really learn much about computer science. |
 
 ---
 
@@ -302,10 +306,9 @@ System response (refusal):
 
 **Instance 1**
 
-- *What I gave the AI:*
-- *What it produced:*
-- *What I changed or overrode:*
-
+- *What I gave the AI: I gave Claude my pipeline diagram and chunking strategy.
+- *What it produced: It produced code to implement chunking, that included attaching metadata to my chunks.
+- *What I changed or overrode: It added code to print chunks for testing, but it was only 2 chunks and only the first 90 characters of each. I edited the code to print 5 chunks and to print the entire chunk instead of just a portion.
 **Instance 2**
 
 - *What I gave the AI:*
