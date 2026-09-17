@@ -5,9 +5,11 @@ Only stage 1 (ingest) is implemented so far.
 """
 
 import re
-from pathlib import Path
 
-DOCUMENTS_DIR = Path("documents")
+import chromadb
+from sentence_transformers import SentenceTransformer
+
+from config import CHROMA_DIR, COLLECTION_NAME, DOCUMENTS_DIR, EMBEDDING_MODEL
 
 # Reviews are separated by one or more blank lines. Each review is a header line
 # followed by the student's comment, e.g.
@@ -110,6 +112,45 @@ def build_chunks(records):
     return built
 
 
+def embed_and_store(chunks):
+    """Embed every chunk and write it to the persistent Chroma collection.
+
+    The collection is dropped and rebuilt on each run so that edits and
+    deletions in documents/ are reflected, rather than accumulating stale rows.
+
+    Embeddings are computed here with sentence-transformers and passed to Chroma
+    explicitly, instead of letting Chroma call its own default embedding model.
+    That keeps one model responsible for both sides of the pipeline — the same
+    model must embed the query at retrieval time or the vectors aren't comparable.
+    """
+    model = SentenceTransformer(EMBEDDING_MODEL)
+    texts = [chunk["text"] for chunk in chunks]
+    embeddings = model.encode(texts, show_progress_bar=False)
+
+    client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+    if COLLECTION_NAME in [c.name for c in client.list_collections()]:
+        client.delete_collection(COLLECTION_NAME)
+
+    # all-MiniLM-L6-v2 already L2-normalizes its output, so cosine and euclidean
+    # produce the same ranking. Cosine is set explicitly anyway so the distances
+    # Chroma returns are cosine distances, and 1 - distance is a real similarity.
+    collection = client.create_collection(
+        name=COLLECTION_NAME,
+        metadata={"hnsw:space": "cosine"},
+    )
+
+    collection.add(
+        ids=[chunk["id"] for chunk in chunks],
+        documents=texts,
+        embeddings=embeddings.tolist(),
+        metadatas=[
+            {k: v for k, v in chunk.items() if k not in ("id", "text")} for chunk in chunks
+        ],
+    )
+
+    return collection, embeddings.shape[1]
+
+
 if __name__ == "__main__":
     records = ingest()
     chunks = build_chunks(records)
@@ -135,3 +176,8 @@ if __name__ == "__main__":
         print(f"\n  id:       {chunk['id']}")
         print(f"  metadata: {  {k: v for k, v in chunk.items() if k not in ('id', 'text')} }")
         print(f"  text:     {chunk['text']}")
+
+    print(f"\nEmbedding with {EMBEDDING_MODEL} and writing to {CHROMA_DIR}/ ...")
+    collection, dims = embed_and_store(chunks)
+    print(f"Stored {collection.count()} chunks, {dims} dimensions each")
+    print(f"Collection '{COLLECTION_NAME}' is ready — query it with retrieve.py")

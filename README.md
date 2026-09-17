@@ -137,35 +137,46 @@ She was new when I had her, and for the most part it seemed like she didn't know
      Results must be text — not screenshots. -->
 
 **Query 1:**
+What professor should I take for CSCI135 if I want an A?
 
 Top returned chunks:
--
--
--
+-[0.582] Professor Jiang Li — CSCI450 — Quality 1/5, Difficulty 5/5:
+     He is most likely going to be the only professor that you can take but if there are other options take them. He is the most inconsiderate professor yo...
+-[0.573] Professor Jeremy Blackstone — CSCI135 — Quality 5/5, Difficulty 1/5:
+     Take this class if you want an A. Professor Blackstone is a great teacher especially if you're new to coding. Records his lectures and is very lenient...
+-[0.563] Professor Jeremy Blackstone — CSCI135 — Quality 5/5, Difficulty 4/5:
+     One of the best teachers I've had in my life, and if he taught Computer Science II (CSCSI136) I definitely would want to have him as my professor agai...
 
-Relevance explanation:
+Relevance explanation: The two relevant chunks are the second and third ones. The first chunk refers to a professor that does not teach CSCI135 and has horrible reviews. Even though his reviews say nothing about earning an A, the data is skewed due to him having the most reviews out of all of the professors. This is why the metadata that includes the course number is important, so the LLM can ignore that first, unrelated chunk.
 
 ---
 
 **Query 2:**
+How often does Professor Andy assign labs?
 
 Top returned chunks:
--
--
--
+-[0.560] Professor Anietie Andy — CSCI136 — Quality 5/5, Difficulty 2/5:
+     Andy is an excellent professor. His lectures and tests are clear and connected. Weekly lab and sometimes homework, but it's all from the lecture. He e...
+-[0.426] Professor Jeremy Blackstone — CSCI135 — Quality 5/5, Difficulty 3/5:
+     10/10 would recommend! He's super understanding about late work and his office hours are really flexible. He really wants his students to do well and ...
+-[0.389] Professor Jiang Li — CSCI201 — Quality 3/5, Difficulty 5/5:
+     this class is hard and the homework/projects require a lot of time. dr li's lectures are boring but he's helpful especially if you go to office hours....
 
-Relevance explanation:
+Relevance explanation: Chunks for three different professors returned, but the one with the most relevance was returned first. This is a very decent retreival.
 
 ---
 
 **Query 3:**
-
+Which professors don't teach the material and expect you to learn it alone?
 Top returned chunks:
--
--
--
+-[0.532] Professor Jiang Li — CSCI450 — Quality 1/5, Difficulty 5/5:
+     He is most likely going to be the only professor that you can take but if there are other options take them. He is the most inconsiderate professor yo...
+-[0.495] Professor Linwei Niu — CSCI201 — Quality 3/5, Difficulty 3/5:
+     He doesn't really teach, just reads off of Google Slides for every single one of his classes. Extremely monotone, which will bore you after listening ...
+-[0.472] Professor Jiang Li — CSCI201 — Quality 1/5, Difficulty 5/5:
+     One of the worst professors I've ever had. He doesn't teach/explain anything in depth, when asked to clarify he won't b/c we should just get it and it...
 
-Relevance explanation:
+Relevance explanation: These retreivals are perfectly relevant. They reflect how a student in the department would answer if asked the same question in person. However, the 5th chunk that was retreived refers to a professor who is desrcibed as 'Excellent at explaining", which is the opposite of what's being asked. This is not surpising, though, because the word "explaining" is directly in the chunk, which is related to "teach" in the query.
 
 ---
 

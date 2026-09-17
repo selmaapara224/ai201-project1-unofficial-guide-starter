@@ -68,11 +68,11 @@ Production tradeoff reflection: If I were to deploy this project for real users,
 
 | # | Question | Expected answer |
 |---|----------|-----------------|
-| 1 |What Professor should I take for CSCI135 if I want an A? | |
-| 2 |How often does Professor Andy give lab assignments? | |
-| 3 |What do students say about Professor Jiang Li's lecturing style? | |
-| 4 | | |
-| 5 | | |
+| 1 |What Professor should I take for CSCI135 if I want an A? |Professor Jeremy Blackstone |
+| 2 |How often does Professor Andy give lab assignments? |Weekly|
+| 3 |What do students say about Professor Jiang Li's lecturing style? |fast,boring |
+| 4 |Which professors don't teach the material and expect you to learn it alone? |Professor Jiang Li, Professor Linwei Niu |
+| 5 |Who is a good professor for CSCI 999? |No information to answer |
 
 ---
 

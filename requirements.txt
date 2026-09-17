@@ -11,8 +11,12 @@ torch==2.2.2
 numpy<2
 scipy<1.18
 
-# Query interface — add whichever you use for Milestone 5:
-# gradio>=6.9.0
+# Query interface (Milestone 5).
+# gradio 6.18+ requires huggingface_hub>=1.16, but sentence-transformers 3.4.1 is
+# built against the 0.x hub API. Pinning gradio to 6.17.3 and capping the hub
+# below 1.0 keeps both working; installing bare `gradio` breaks embedding.
+gradio==6.17.3
+huggingface_hub<1.0
 # streamlit>=1.40.0
 
 # Document ingestion — add if your documents/ folder contains .pdf files:
