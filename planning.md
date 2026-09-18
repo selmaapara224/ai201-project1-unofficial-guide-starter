@@ -90,7 +90,7 @@ Production tradeoff reflection: If I were to deploy this project for real users,
 
 ## Architecture
 
-/documents/App of AI Project 1 Pipeline
+/documents/App of AI Project 1 Pipeline.jpg
 
 
 
@@ -111,6 +111,6 @@ Milestone 2 — Writing Spec: I asked Claude to explain certain concepts that I 
 
 Milestone 3 — Ingestion and chunking: I will ask Claude to review the format of my documents, and ask it to implement ingestion. I will then give Claude my Chunking Strategy and ask it to implement chunk_text(), ensuring it also saves the metadata I need saved.
 
-Milestone 4 — Embedding and retrieval: I will ask claude to implement
+Milestone 4 — Embedding and retrieval: I will ask claude to implement my embedding and retrieval ensuring to prioritize maintaining the important metadata, ensuring retreival errors don't affect generation too much.
 
-**Milestone 5 — Generation and interface:**
+Milestone 5 — Generation and interface: I will ask Claude to reccomend ways to ensure my system prompt results in the generation of grounded answers, as it relates to my particular domain. I will also ask it to generate the code for this section.

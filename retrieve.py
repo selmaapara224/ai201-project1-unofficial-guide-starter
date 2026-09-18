@@ -9,6 +9,7 @@ command line:
 import sys
 
 import chromadb
+from chromadb.errors import NotFoundError
 from sentence_transformers import SentenceTransformer
 
 from config import CHROMA_DIR, COLLECTION_NAME, EMBEDDING_MODEL, TOP_K
@@ -17,18 +18,23 @@ _model = None
 _collection = None
 
 
-def _load():
+def _load(reopen=False):
     """Open the model and collection once, then reuse them.
 
     Loading the model takes a couple of seconds, so a long-lived interface should
     not pay that cost on every question.
+
+    `reopen=True` discards the cached collection handle and fetches a fresh one.
+    A handle is bound to a specific collection UUID, so running build_index.py
+    (which drops and recreates the collection) invalidates any handle a running
+    app is holding. The model is never reloaded — it does not go stale.
     """
     global _model, _collection
 
     if _model is None:
         _model = SentenceTransformer(EMBEDDING_MODEL)
 
-    if _collection is None:
+    if _collection is None or reopen:
         if not CHROMA_DIR.exists():
             raise FileNotFoundError(
                 f"No index at {CHROMA_DIR.resolve()}. Run: python build_index.py"
@@ -67,11 +73,20 @@ def retrieve(question, top_k=TOP_K, course=None, min_quality=None):
     elif conditions:
         where = {"$and": conditions}
 
-    response = collection.query(
-        query_embeddings=model.encode([question]).tolist(),
-        n_results=top_k,
-        where=where,
-    )
+    query_embedding = model.encode([question]).tolist()
+
+    try:
+        response = collection.query(
+            query_embeddings=query_embedding, n_results=top_k, where=where
+        )
+    except NotFoundError:
+        # The index was rebuilt since this handle was opened. Reopen and retry
+        # once, so a running interface survives `python build_index.py` instead
+        # of failing every query until it is restarted.
+        _, collection = _load(reopen=True)
+        response = collection.query(
+            query_embeddings=query_embedding, n_results=top_k, where=where
+        )
 
     results = []
     for text, metadata, distance in zip(

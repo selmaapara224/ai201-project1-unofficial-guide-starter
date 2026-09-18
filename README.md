@@ -42,6 +42,31 @@ Verified with a clean-room install from the pinned `requirements.txt`:
 `pip check` reports no broken requirements, and `all-MiniLM-L6-v2` produces
 384-dimensional embeddings that store and query correctly through Chroma.
 
+**A second near-miss: the query interface.** Milestone 5 needs Gradio, and the
+stock `requirements.txt` suggested `gradio>=6.9.0`. That resolves to gradio
+6.27.0, which requires `huggingface_hub>=1.16` — a major-version jump from the
+installed 0.36.2. `sentence-transformers` 3.4.1 declares no upper bound on the
+hub, so pip would have performed that upgrade without complaint, moving a
+pinned, working package across an API boundary it was never tested against.
+Nothing would have failed at install time; it would have failed at embedding
+time, which is the same late-surfacing pattern as the NumPy 2 ABI problem above.
+
+`pip install --dry-run` exposed the planned upgrade before anything touched the
+environment. Constraining the hub rather than accepting the newest Gradio:
+
+    pip install "gradio" "huggingface_hub<1.0" "numpy<2"
+
+resolves to **gradio 6.17.3**, which leaves torch, numpy, transformers,
+sentence-transformers, and huggingface_hub untouched, adding only pandas 3.0.5
+and the FastAPI/Starlette server stack. Both constraints are pinned in
+`requirements.txt` so a fresh install reproduces the working set instead of
+re-triggering the conflict. Installing a bare `gradio` will undo this.
+
+**Re-verified after installing:** `pip check` reports no broken requirements;
+numpy 1.26.4, torch 2.2.2, and huggingface_hub 0.36.2 are unchanged;
+`retrieve.py` still returns scored matches from Chroma; and `python app.py`
+serves HTTP 200 on port 7860.
+
 **Portability.** These pins remain valid on Apple Silicon, since torch 2.2.2
 also ships arm64 wheels. The binding constraint for any machine is Python ≤ 3.12.
 
@@ -49,50 +74,39 @@ also ships arm64 wheels. The binding constraint for any machine is Python ≤ 3.
 
 ## Domain
 
-<!-- What topic or category of knowledge does your system cover?
-     Why is this knowledge valuable, and why is it hard to find through official channels?
-     Example: "Student reviews of CS professors at [university] — useful because official
-     course descriptions don't reflect teaching style, exam difficulty, or workload." -->
+The domain will be student reviews of Computer Science professors at Howard University. Many students hear about different professors that other students love or ones they hated, but they may not always know the specifics of what was endured in those professor's classes. For some professors with horrible reviews, their classes are unavoidable, and a student may be able to prepare in some way, even if it's just mentally. For other professors with great reviews, a student may be advised to choose that one over another. It is helpful to have this information quickly accessible while actively registering for classes, instead of having to comb through lots of reviews individually.
+
 
 ---
 
 ## Document Sources
 
-<!-- List every source you collected documents from.
-     Be specific: include URLs, subreddit names, forum thread titles, or file names.
-     Aim for variety — sources that together cover different subtopics or perspectives. -->
-
-| # | Source | Type | URL or file path |
-|---|--------|------|-----------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
-| 6 | | | |
-| 7 | | | |
-| 8 | | | |
-| 9 | | | |
-| 10 | | | |
+| # | Source | Description | URL or location |
+|---|--------|-------------|-----------------|
+| 1 |RateMyProf|Reviews on Prof Jeremy Blackstone| /Users/selmaapara/CodePath/ai201-project1-unofficial-guide-starter/documents/Professor Jeremy Blackstone.txt |
+| 2 |LRateMyProf |LReviews on Prof Anietie Andy |/Users/selmaapara/CodePath/ai201-project1-unofficial-guide-starter/documents/Professor Anietie Andy.txt |
+| 3 |RateMyProf |Reviews on Prof. Linwei Niu |/Users/selmaapara/CodePath/ai201-project1-unofficial-guide-starter/documents/Professor Linwei Niu.txt |
+| 4 |RateMyProf |Reviews on Prof. Jiang Li |/Users/selmaapara/CodePath/ai201-project1-unofficial-guide-starter/documents/Professor Jiang Li.txt |
+| 5 |RateMyProf |Reviews on Prof. Andre Campbell |/Users/selmaapara/CodePath/ai201-project1-unofficial-guide-starter/documents/Professor Andre Campbell.txt |
+| 6 |RateMyProf |Reviews on Prof. Todd Shurn |/Users/selmaapara/CodePath/ai201-project1-unofficial-guide-starter/documents/Professor Todd Shurn.txt |
+| 7 |RateMyProf |Reviews on Prof. Legand Burge |/Users/selmaapara/CodePath/ai201-project1-unofficial-guide-starter/documents/Professor Legand Burge.txt |
+| 8 |RateMyProf |Reviews on Prof. Mikayla Orange| /Users/selmaapara/CodePath/ai201-project1-unofficial-guide-starter/documents/Professor Mikayla Orange|
+| 9 |RateMyProf |Reviews on Prof. Anamika Rupa|'/Users/selmaapara/CodePath/ai201-project1-unofficial-guide-starter/documents/Professor Anamika Rupa.txt' |
+| 10 |RateMyProf |Reviews on Prof. Ashish Adhikari |/Users/selmaapara/CodePath/ai201-project1-unofficial-guide-starter/documents/Professor Ashish Adhikari.txt |
 
 ---
 
 ## Chunking Strategy
 
-<!-- Describe your chunking approach with enough specificity that someone else could reproduce it.
-     Include:
-     - Chunk size (characters or tokens) and why that size fits your documents
-     - Overlap size and why (or why not) you used overlap
-     - Any preprocessing you did before chunking (e.g., stripping HTML, removing headers)
-     - What your final chunk count was across all documents -->
 
-**Chunk size:**
+Chunk size: Instead of by characters, the chunks will be split by empty space, making every review its own chunk.
 
-**Overlap:**
+Overlap: There will be no overlap.
 
-**Why these choices fit your documents:**
+Reasoning: Each review includes the Professor's name, the course the student had them for, and different specific information each student stated. Chunking by review allows for the requested information to always be attached to the specific Professor the information is being requested about. For example, if a query is about the homework load for Professor Blackstone, the user would not want a response that relates to a different professor that also has a review about. homework. 
 
-**Final chunk count:**
+
+Final chunk count: 63
 
 ---
 
@@ -118,23 +132,15 @@ She was new when I had her, and for the most part it seemed like she didn't know
 
 ## Embedding Model
 
-<!-- Name the embedding model you used and explain your choice.
-     Then answer: if you were deploying this system for real users and cost wasn't a constraint,
-     what tradeoffs would you weigh in choosing a different model?
-     Consider: context length limits, multilingual support, accuracy on domain-specific text,
-     latency, and local vs. API-hosted. -->
+Embedding model: The embedding model I am using is all-MiniLM-L6-v2. It has a 256-token window, and the maximum amount of tokens out of all of my chunks is 110, so my documents fit within its limitation. 
 
-**Model used:**
+Top-k: I am using 8, because of the nature of my chunks. My first test query asks about CSCI135 specifically, but also mentions a grade. There is a possibility that a chunk about a professor that teaches a different course will be retrieved, due to other parts of the chunk making it relate closely to those chunks that contain information about CSCI135. Having a higher top-k, 8, allows for the LLM to be sent more chunks, having a higher probability of generating a more-fit answer, instead of leaving out chunks that may have had the specific answer needed in them.
 
-**Production tradeoff reflection:**
-
+Production tradeoff reflection: If I were to deploy this project for real users, I would still not use a different embedding model, simply because of the size of the reviews. More token allowance would not be needed, because the reviews would never go over the current 256-token window of all-MiniLM-L6-v2, due to RateMyProfessor having a character limit on their website in the first place.
 ---
 
 ## Retrieval Test Results
 
-<!-- Run these 3 queries through your retrieval system and record the top returned chunks.
-     For at least 2 of the 3, explain why the returned chunks are relevant to the query.
-     Results must be text — not screenshots. -->
 
 **Query 1:**
 What professor should I take for CSCI135 if I want an A?
@@ -189,9 +195,28 @@ Relevance explanation: These retreivals are perfectly relevant. They reflect how
      Do not just say "I told it to use the documents" — show the actual instruction or explain
      the mechanism. -->
 
-**System prompt grounding instruction:**
+**System prompt grounding instruction: 
 
-**How source attribution is surfaced in the response:**
+Rules:
+1. Use ONLY the reviews provided below. Never add facts from your own knowledge \
+about these professors, their courses, or the university.
+2. Ignore reviews that do not address the question. The reviews are selected by \
+similarity search, so several are usually irrelevant. Do not force them in.
+3. If the reviews do not contain the answer, say so plainly: "The reviews I have \
+don't cover that." Then state what they do cover, if anything is close. Do not guess.
+4. Cite every claim with the professor's name and course in plain parentheses, \
+like (Blackstone, CSCI135). A claim without a citation is not allowed. Use no \
+other citation format — no bracketed markers, no review numbers, no footnotes, \
+no line references.
+5. Reviews often disagree about the same professor. When they do, report the \
+disagreement instead of averaging it away or picking a side — say how many \
+reviews take each position.
+6. One review is one student's opinion. Do not present a single review as a \
+general fact; write "one student said" rather than "students say".
+7. Never invent ratings, averages, or counts. Only use the Quality and Difficulty \
+numbers shown in the reviews.
+
+How source attribution is surfaced in the response: See rule 4.
 
 ---
 
@@ -223,9 +248,9 @@ Source attribution:
 
 **Out-of-scope query**
 
-Query:
+Query: Who won the world series?
 
-System response (refusal):
+System response (refusal): The reviews I have don’t cover that. They only discuss students’ opinions of Howard University computer‑science professors, their teaching styles, course difficulty, and grading.
 
 ---
 
@@ -325,3 +350,11 @@ System response (refusal):
 - *What I gave the AI:*
 - *What it produced:*
 - *What I changed or overrode:*
+
+
+Loom demo Video:
+
+<div style="position: relative; padding-bottom: 62.5%; height: 0;"><iframe src="https://www.loom.com/embed/f4f9bf7ef0214c01895cca078986fa50" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
+
+<div style="position: relative; padding-bottom: 62.5%; height: 0;"><iframe src="https://www.loom.com/embed/321aaafe53814a5bb598fe7e470400b9" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
